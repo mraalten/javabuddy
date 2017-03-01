@@ -1,0 +1,41 @@
+Algemene beschrijving:
+----------------------
+Onze bank moet het toestaan om 2 soorten rekeningen te kunnen openen, een betaal- en een spaarrekening.
+Als een klant reeds bekend is bij de bank, dient de nieuwe rekening aan die, bestaande, persoon te worden gekoppeld.
+Is een klant nieuw dan dient er een nieuw "klantrecord" te worden aangemaakt. Bestaande klanten herkennen we via
+hun BSN-nummer. Dit nummer is uniek genoeg.
+
+Wanneer er een rekening wordt geopend dan dient er een minimaal bedrag te worden gestort (EUR 100,=).
+Ook heeft de klant een kredietlimiet wat betekent dat wanneer er geld opgenomen wordt er niet meer mag worden opgenomen
+dan dat deze kredietlimiet toestaat.
+
+Een bankrekeningnummer bestaat uit 6 Alfanumerieke tekens, een cijfer voor Betaal- of Spaarrekenin, gevolgd door 9 willekeurig gegenereerde cijfers.
+Het bankrekeningnummer wordt niet door de medewerker bepaald maar door de bank gegenereerd.
+Betaalrekeningen beginnen met NLJAVA, dan een 0, en dan 9 cijfers.
+Betaalrekeningen beginnen met NLJAVA, dan een 1, en dan 9 cijfers.
+Let op dat een gegenereerd rekeningnummer UNIEK is en dus slechts 1 keer voorkomt.
+
+Rekeningen hebben de volgende mogelijkheden:
+- geld storten (deposit)
+- geld opnemen (withdraw)
+- geld overmaken naar een andere rekening (transfer)
+
+Om ten alle tijden een actueel overzicht te hebben van het totale uitstaande bedrag op ALLE rekeningen, en om
+te voorkomen dat we telkens bij het opvragen van het totale saldo, alle rekeningen langs moeten lopen, dient
+onze bank het saldo continue, dus bij iedere mutatie op iedere rekening, bij te houden.
+
+Technische aandachtspunten:
+- Schrijf kleine methodes en geeft de methode een duidelijke naam. Een methode doet 1 ding en de naam geeft aan wat
+- Denk in objecten. Laat het object waar de gegevens worden bijgehouden het werk doen
+- Schrijf vanaf het begin unit-testen, liefst nog voordat je de implementatie-code schrijft
+- Probeer System.out.println's en commentaar te vermijden. Een methode moet duidelijk genoeg zijn. Mocht je toch iets willen toelichten,
+  doe dit dan in de JavaDoc boven de methode
+- Probeer een aparte class te maken met alle constanten
+
+Opdracht 1:
+- Implementeer het domeinmodel zoals in Astah volledig. Zorg ervoor dat ook de relaties tussen de objecten worden gelegd.
+  Dwing af dat verplichte velden gevuld zijn bij het aanmaken van objecten. Denk hierbij aan de constructor van een object
+
+  Wanneer er een onoverkomelijke fout optreedt in de applicatie dan kun je een exceptie gooien:
+
+  throw new IllegalStateException("duidelijke melding van de opgetreden fout")
