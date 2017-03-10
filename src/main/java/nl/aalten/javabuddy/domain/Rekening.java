@@ -1,29 +1,47 @@
 package nl.aalten.javabuddy.domain;
 
-import java.time.LocalDate;
-
-/**
- * Created by HoltropA on 22-2-2017.
- */
 public class Rekening {
 
+    public String bsnNummer;
     private String rekeningNummer;
+    private String rekening_type;
     private int saldo;
     private int kredietLimiet;
 
-    public Rekening(String rekeningNummer, int saldo, int kredietLimiet) {
+    public Rekening(String bsnNummer, String rekeningNummer, String rekening_type, int saldo, int kredietLimiet) {
+        this.bsnNummer = bsnNummer;
         this.rekeningNummer = rekeningNummer;
+        this.rekening_type = rekening_type;
         this.saldo = saldo;
         this.kredietLimiet = kredietLimiet;
     }
 
-    private void transfer(String rekeningFrom, String rekeingTo, int bedrag) {
+    public String getRekening_type() {
+        return rekening_type;
     }
 
-    private void stortGeld(int bedrag) {
+    public int getSaldo_type() {
+        return saldo;
     }
 
-    private void geldOpnemen(int bedrag) {
+    public String getRekeningNummer() {
+        return rekeningNummer;
+    }
+
+    public void transfer(String rekeningFrom, String rekeingTo, int bedrag) {
+        System.out.println(rekeningFrom + " " + rekeingTo + " " + bedrag);
+    }
+
+    public void stortGeld(int bedrag) {
+        this.saldo = this.saldo + bedrag;
+        System.out.println("Op rekening" + this.rekeningNummer + "is gestort: " + bedrag);
+        System.out.println("Huidig saldo van deze rekening is: " + this.saldo);
+    }
+
+    public void geldOpnemen(int bedrag) {
+        this.saldo = this.saldo - bedrag;
+        System.out.println("Op rekening" + this.rekeningNummer + "is afgehaald: " + bedrag);
+        System.out.println("Huidig saldo van deze rekening is: " + this.saldo);
     }
 
 }
