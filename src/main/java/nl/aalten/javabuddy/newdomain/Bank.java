@@ -27,23 +27,6 @@ public class Bank {
         return existingPerson;
     }
 
-//    public Persoon findPersoon(String bsn) {
-//        Persoon existingPerson = personen.get(bsn);
-//        if (existingPerson == null) {
-//            System.out.println("Dit bsnnummer bestaat niet. Wilt u deze nu invoeren?");
-//            addPersoon(bsn, "Henk", LocalDate.of(1976, 9, 9));
-//        }
-//        return existingPerson;
-//    }
-//
-//    public void addPersoon(String bsn, String naam, LocalDate geboorteDatum) {
-//        Persoon existingPerson = personen.get(bsn);
-//        if (existingPerson == null) {
-//            Persoon persoon = new Persoon(bsn, naam, geboorteDatum);
-//            personen.put(bsn, persoon);
-//        }
-//    }
-
     public void deposit(String rekeningNummer, int teStortenBedrag) {
         Rekening rekening = rekeningen.get(rekeningNummer);
         rekening.setSaldo(rekening.getSaldo() + teStortenBedrag);
