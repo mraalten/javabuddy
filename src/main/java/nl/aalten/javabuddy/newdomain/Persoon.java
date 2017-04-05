@@ -9,7 +9,7 @@ public class Persoon {
     private String bsnNummer;
     private String naam;
     private LocalDate geboorteDatum;
-    private List<Rekening> rekeningen = new ArrayList();
+    public List<Rekening> rekeningen = new ArrayList();
 
     public Persoon(String bsnNummer, String naam, LocalDate geboorteDatum) {
         this.bsnNummer = bsnNummer;
@@ -20,4 +20,17 @@ public class Persoon {
     public String getBsnNummer() {
         return bsnNummer;
     }
+
+    public String getNaam() {
+        return naam;
+    }
+
+    public LocalDate getGeboorteDatum() {
+        return geboorteDatum;
+    }
+
+    public List<Rekening> getRekeningen() {
+        return rekeningen;
+    }
+
 }

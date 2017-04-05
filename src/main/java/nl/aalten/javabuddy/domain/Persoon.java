@@ -61,6 +61,9 @@ public class Persoon {
         Rekening spaarRekening = new Rekening(bsnNummer, "NLJAVA1" + maxVolgnummer, rekeningType, 100, 0);
         myRekeningen.add(spaarRekening);
     }
+    private boolean wileenspaarrekening() {
+        return input.nextLine()  == "j";
+    }
 }
 
 

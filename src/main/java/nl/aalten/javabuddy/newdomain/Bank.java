@@ -1,8 +1,7 @@
 package nl.aalten.javabuddy.newdomain;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Bank {
     private String naam;
@@ -15,32 +14,85 @@ public class Bank {
     }
 
     public void openAccount(String bsn, String naam, LocalDate geboorteDatum) {
-         Persoon persoon = findOrCreatePersoon(bsn, naam, geboorteDatum);
+        Persoon persoon = findOrCreatePersoon(bsn, naam, geboorteDatum);
     }
 
     public Persoon findOrCreatePersoon(String bsn, String naam, LocalDate geboorteDatum) {
         Persoon existingPerson = personen.get(bsn);
         if (existingPerson == null) {
-            existingPerson = new Persoon(bsn, naam, geboorteDatum);
-            personen.put(bsn, existingPerson);
+            System.out.println("Dit bsnnummer bestaat niet. Wilt u deze nu invoeren?");
+            Persoon persoon = new Persoon(bsn, naam, geboorteDatum);
+            personen.put(bsn, persoon);
         }
         return existingPerson;
     }
 
+//    public Persoon findPersoon(String bsn) {
+//        Persoon existingPerson = personen.get(bsn);
+//        if (existingPerson == null) {
+//            System.out.println("Dit bsnnummer bestaat niet. Wilt u deze nu invoeren?");
+//            addPersoon(bsn, "Henk", LocalDate.of(1976, 9, 9));
+//        }
+//        return existingPerson;
+//    }
+//
+//    public void addPersoon(String bsn, String naam, LocalDate geboorteDatum) {
+//        Persoon existingPerson = personen.get(bsn);
+//        if (existingPerson == null) {
+//            Persoon persoon = new Persoon(bsn, naam, geboorteDatum);
+//            personen.put(bsn, persoon);
+//        }
+//    }
+
     public void deposit(String rekeningNummer, int teStortenBedrag) {
+        Rekening rekening = rekeningen.get(rekeningNummer);
+        rekening.setSaldo(rekening.getSaldo() + teStortenBedrag);
     }
 
     public void withdraw(String rekeningNummer, int opTeNemenBedrag) {
+        Rekening rekening = rekeningen.get(rekeningNummer);
+        rekening.setSaldo(rekening.getSaldo() - opTeNemenBedrag);
     }
 
     public void transferMoney(String rekeningFrom, String rekeningTo, int overTeMakenBedrag) {
+        Rekening rekeningteStortenBedrag = rekeningen.get(rekeningTo);
+        rekeningteStortenBedrag.setSaldo(rekeningteStortenBedrag.getSaldo() + overTeMakenBedrag);
+        Rekening rekeningopTeNemenBedrag = rekeningen.get(rekeningFrom);
+        rekeningopTeNemenBedrag.setSaldo(rekeningopTeNemenBedrag.getSaldo() - overTeMakenBedrag);
     }
 
-    public void addPersoon(String bsn, String naam, LocalDate geboorteDatum) {
+
+    public void addRekeningToPersoon(String bsn, String maxRekeningNummer, int saldo, int kredietLimiet) {
         Persoon existingPerson = personen.get(bsn);
-        if (existingPerson == null) {
-            Persoon persoon = new Persoon(bsn, naam, geboorteDatum);
-            personen.put(bsn, persoon);
+        String rekeningNummer = "NLJAVA1" + maxRekeningNummer;
+        Rekening rekening = new Rekening(rekeningNummer, saldo, kredietLimiet);
+        existingPerson.rekeningen.add(rekening);
+        List<Rekening> rekeningenVoorPersoon = new ArrayList<>();
+        rekeningenVoorPersoon.add(rekening);
+        rekeningen.put(rekeningNummer, rekening);
+    }
+
+    public void addSpaarRekeningToPersoon(String bsn, String maxRekeningNummer, int saldo, int kredietLimiet) {
+        Persoon existingPerson = personen.get(bsn);
+        String rekeningNummer = "NLJAVA2" + maxRekeningNummer;
+        Rekening rekening = new Rekening(rekeningNummer, saldo, kredietLimiet);
+        existingPerson.rekeningen.add(rekening);
+        List<Rekening> spaarrekeningenVoorPersoon = new ArrayList<>();
+        spaarrekeningenVoorPersoon.add(rekening);
+        rekeningen.put(rekeningNummer, rekening);
+    }
+
+    public String bepaalMaxRekeningNummer() {
+        int maxRekeningNummer = 0;
+        for (Map.Entry<String, Rekening> entry : rekeningen.entrySet()) {
+            Rekening rekening = entry.getValue();
+            String rekeningNummer = rekening.getRekeningNummer().substring(9, 16);
+            int intRekeningNummer = Integer.parseInt(rekeningNummer);
+            if (maxRekeningNummer < intRekeningNummer) {
+                maxRekeningNummer = intRekeningNummer;
+            }
         }
+        String rekeningVolgnummer = String.format("%09d", ++maxRekeningNummer);
+        return rekeningVolgnummer;
     }
 }
