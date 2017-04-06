@@ -28,8 +28,12 @@ public class Bank {
     }
 
     public void deposit(String rekeningNummer, int teStortenBedrag) {
-        Rekening rekening = rekeningen.get(rekeningNummer);
-        rekening.setSaldo(rekening.getSaldo() + teStortenBedrag);
+        Rekening existinRekening = rekeningen.get(rekeningNummer);
+        if ( existinRekening == null ) {
+            throw new IllegalStateException("Rekening bestaat niet");
+        } else {
+            existinRekening.setSaldo(existinRekening.getSaldo() + teStortenBedrag);
+        }
     }
 
     public void withdraw(String rekeningNummer, int opTeNemenBedrag) {
@@ -43,9 +47,14 @@ public class Bank {
 
     public void transferMoney(String rekeningFrom, String rekeningTo, int overTeMakenBedrag) {
         Rekening rekeningteStortenBedrag = rekeningen.get(rekeningTo);
-        rekeningteStortenBedrag.setSaldo(rekeningteStortenBedrag.getSaldo() + overTeMakenBedrag);
         Rekening rekeningopTeNemenBedrag = rekeningen.get(rekeningFrom);
-        rekeningopTeNemenBedrag.setSaldo(rekeningopTeNemenBedrag.getSaldo() - overTeMakenBedrag);
+        if ( rekeningteStortenBedrag == null && rekeningopTeNemenBedrag == null ) {
+            throw new IllegalStateException("Rekening bestaat niet");
+        } else {
+            rekeningteStortenBedrag.setSaldo(rekeningteStortenBedrag.getSaldo() + overTeMakenBedrag);
+            rekeningopTeNemenBedrag.setSaldo(rekeningopTeNemenBedrag.getSaldo() - overTeMakenBedrag);
+        }
+
     }
 
 
