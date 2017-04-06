@@ -33,8 +33,12 @@ public class Bank {
     }
 
     public void withdraw(String rekeningNummer, int opTeNemenBedrag) {
-        Rekening rekening = rekeningen.get(rekeningNummer);
-        rekening.setSaldo(rekening.getSaldo() - opTeNemenBedrag);
+        Rekening existinRekening = rekeningen.get(rekeningNummer);
+        if ( existinRekening == null ) {
+            throw new IllegalStateException("Rekening bestaat niet");
+        } else {
+            existinRekening.setSaldo(existinRekening.getSaldo() - opTeNemenBedrag);
+        }
     }
 
     public void transferMoney(String rekeningFrom, String rekeningTo, int overTeMakenBedrag) {

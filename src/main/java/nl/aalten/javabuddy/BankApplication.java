@@ -64,9 +64,6 @@ public class BankApplication {
                 String bsnNummerGezocht = (input.nextLine());
                 invoer.setBsn(bsnNummerGezocht);
                 Persoon persoon = bank.findOrCreatePersoon(bsnNummerGezocht, invoer.getNaam() ,invoer.getGeboorteDatum());
-//                if (persoon == null) {
-//                    bank.addPersoon(bsnNummerGezocht, "Henk", LocalDate.of(1976, 9, 9));
-//                }
                 System.out.println("Dit is de opgevraagde klant " + persoon.getNaam() + " " + persoon.getGeboorteDatum());
                 for (int i = 0; i < persoon.rekeningen.size(); i++) {
                     System.out.println("Rekeningnummer" + i + " is: " + persoon.rekeningen.get(i).getRekeningNummer() + " saldo " + persoon.rekeningen.get(i).getSaldo());
