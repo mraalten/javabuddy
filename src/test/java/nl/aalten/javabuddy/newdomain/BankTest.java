@@ -32,8 +32,9 @@ public class BankTest {
         Bank bank = new Bank("test");
         bank.findOrCreatePersoon("12345", "test", LocalDate.now());
         Persoon persoon = bank.findOrCreatePersoon("12345", "test", LocalDate.now());
-        bank.addRekeningToPersoon("12345", "",0, 0);
-        bank.addSpaarRekeningToPersoon("12345", "", 0, 0);
+        bank.addRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(),100, 500);
+        bank.addSpaarRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), 100, 500);
+        bank.transferMoney(persoon.rekeningen.get(0).getRekeningNummer(), persoon.rekeningen.get(1).getRekeningNummer(),100);
 
         assertThat(persoon.rekeningen).isNotNull();
     }
