@@ -30,40 +30,41 @@ public class BankApplication {
         System.out.println("5 Nog een rekening openen van een bestaande klant ");
         System.out.println("9 Einde ");
 
-        bank.findOrCreatePersoon("12345", "Anne", LocalDate.of(1966, 12, 12));
-        bank.addRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), doorlopendeSaldo, doorlopendKrediet);
-        bank.addSpaarRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), spaarSaldo, spaarKrediet);
-        bank.findOrCreatePersoon("98765", "Piet", LocalDate.of(1956, 11, 11));
-        bank.addRekeningToPersoon("98765", bank.bepaalMaxRekeningNummer(), doorlopendeSaldo, doorlopendKrediet);
-        bank.addSpaarRekeningToPersoon("98765", bank.bepaalMaxRekeningNummer(), spaarSaldo, spaarKrediet);
+        boolean DoeWAtinvoer = bank.toString().isEmpty();
 
         String input_keuze = input.nextLine();
         System.out.println("U heeft de volgende keuze gemaakt: " + input_keuze);
         Invoer invoer = new Invoer();
         switch (input_keuze) {
             case "1":
-                System.out.println("Wat is het bsn nummer de klant");
-                String bsnNummer = (input.nextLine());
-                invoer.setBsn(bsnNummer);
-                System.out.println("Wat is de naam van de klant");
-                String naam = (input.nextLine());
-                invoer.setNaam(naam);
-                System.out.println("Wat is de geboortejaar  van de klant bijv 1966");
-                int klant_gebjaar = Integer.parseInt(input.nextLine());
-                System.out.println("Wat is de geboortemaand  van de klant bijv 06");
-                int klant_gebmaand = Integer.parseInt(input.nextLine());
-                System.out.println("Wat is de geboortedag  van de klant bijv 14");
-                int klant_gebdag = Integer.parseInt(input.nextLine());
-                invoer.setGeboorteDatum(klant_gebjaar, klant_gebmaand, klant_gebdag);
-                bank.findOrCreatePersoon(invoer.getBsn(), invoer.getNaam(), invoer.getGeboorteDatum());
-                bank.addRekeningToPersoon(invoer.getBsn(), invoer.getRekeningNummer(), invoer.getSaldo(), invoer.getKredietLimiet());
-                bank.addSpaarRekeningToPersoon(invoer.getBsn(), invoer.getRekeningNummer(), invoer.getSaldo(), invoer.getKredietLimiet());
+//                System.out.println("Wat is het bsn nummer de klant");
+//                String bsnNummer = (input.nextLine());
+//                invoer.setBsn(bsnNummer);
+//                System.out.println("Wat is de naam van de klant");
+//                String naam = (input.nextLine());
+//                invoer.setNaam(naam);
+//                System.out.println("Wat is de geboortejaar  van de klant bijv 1966");
+//                int klant_gebjaar = Integer.parseInt(input.nextLine());
+//                System.out.println("Wat is de geboortemaand  van de klant bijv 06");
+//                int klant_gebmaand = Integer.parseInt(input.nextLine());
+//                System.out.println("Wat is de geboortedag  van de klant bijv 14");
+//                int klant_gebdag = Integer.parseInt(input.nextLine());
+//                invoer.setGeboorteDatum(klant_gebjaar, klant_gebmaand, klant_gebdag);
+//                bank.CreateNewPersoon(invoer.getBsn(), invoer.getNaam(), invoer.getGeboorteDatum());
+//                bank.addRekeningToPersoon(invoer.getBsn(), bank.bepaalMaxRekeningNummer(), doorlopendeSaldo, doorlopendKrediet);
+//                bank.addSpaarRekeningToPersoon(invoer.getBsn(), bank.bepaalMaxRekeningNummer(), spaarSaldo, spaarKrediet);
+                bank.CreateNewPersoon("12345", "Anne", LocalDate.of(1966, 12, 12));
+                bank.addRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), doorlopendeSaldo, doorlopendKrediet);
+                bank.addSpaarRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), spaarSaldo, spaarKrediet);
+                bank.CreateNewPersoon("98765", "Piet", LocalDate.of(1956, 11, 11));
+                bank.addRekeningToPersoon("98765", bank.bepaalMaxRekeningNummer(), doorlopendeSaldo, doorlopendKrediet);
+                bank.addSpaarRekeningToPersoon("98765", bank.bepaalMaxRekeningNummer(), spaarSaldo, spaarKrediet);
                 break;
             case "2":
                 System.out.println("Wat is het bsn nummer de klant");
                 String bsnNummerGezocht = (input.nextLine());
                 invoer.setBsn(bsnNummerGezocht);
-                Persoon persoon = bank.findOrCreatePersoon(bsnNummerGezocht, invoer.getNaam() ,invoer.getGeboorteDatum());
+                Persoon persoon = bank.findExistingPersoon(bsnNummerGezocht);
                 System.out.println("Dit is de opgevraagde klant " + persoon.getNaam() + " " + persoon.getGeboorteDatum());
                 for (int i = 0; i < persoon.rekeningen.size(); i++) {
                     System.out.println("Rekeningnummer" + i + " is: " + persoon.rekeningen.get(i).getRekeningNummer() + " saldo " + persoon.rekeningen.get(i).getSaldo());
@@ -75,6 +76,13 @@ public class BankApplication {
                 break;
             case "4":
                 bank.transferMoney("NLJAVA1000000003", "NLJAVA1000000001", 25);
+                break;
+            case "5":
+                System.out.println("Wat is het bsn nummer de klant");
+                bsnNummerGezocht = (input.nextLine());
+                invoer.setBsn(bsnNummerGezocht);
+                Persoon persoonGezocht = bank.findExistingPersoon(bsnNummerGezocht);
+                bank.addRekeningToPersoon(persoonGezocht.getBsnNummer(), bank.bepaalMaxRekeningNummer(), doorlopendeSaldo, doorlopendKrediet);
                 break;
             case "9":
                 nogNietEindeProgramma = false;

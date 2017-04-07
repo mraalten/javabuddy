@@ -14,31 +14,39 @@ public class Bank {
     }
 
     public void openAccount(String bsn, String naam, LocalDate geboorteDatum) {
-        Persoon persoon = findOrCreatePersoon(bsn, naam, geboorteDatum);
+        Persoon persoon = CreateNewPersoon(bsn, naam, geboorteDatum);
     }
 
-    public Persoon findOrCreatePersoon(String bsn, String naam, LocalDate geboorteDatum) {
+    public Persoon CreateNewPersoon(String bsn, String naam, LocalDate geboorteDatum) {
         Persoon existingPerson = personen.get(bsn);
         if (existingPerson == null) {
             System.out.println("Dit bsnnummer bestaat niet. Wilt u deze nu invoeren?");
-            Persoon persoon = new Persoon(bsn, naam, geboorteDatum);
-            personen.put(bsn, persoon);
+            existingPerson = new Persoon(bsn, naam, geboorteDatum);
+            personen.put(bsn, existingPerson);
+        }
+        return existingPerson;
+    }
+
+    public Persoon findExistingPersoon(String bsn) {
+        Persoon existingPerson = personen.get(bsn);
+        if (existingPerson == null) {
+            System.out.println("Dit bsnnummer bestaat niet. Wilt u deze nu invoeren?");
         }
         return existingPerson;
     }
 
     public void deposit(String rekeningNummer, int teStortenBedrag) {
-        Rekening existinRekening = rekeningen.get(rekeningNummer);
-        if ( existinRekening == null ) {
+        Rekening existingRekening = rekeningen.get(rekeningNummer);
+        if (existingRekening == null) {
             throw new IllegalStateException("Rekening bestaat niet");
         } else {
-            existinRekening.setSaldo(existinRekening.getSaldo() + teStortenBedrag);
+            existingRekening.setSaldo(existingRekening.getSaldo() + teStortenBedrag);
         }
     }
 
     public void withdraw(String rekeningNummer, int opTeNemenBedrag) {
         Rekening existingRekening = rekeningen.get(rekeningNummer);
-        if ( existingRekening == null ) {
+        if (existingRekening == null) {
             throw new IllegalStateException("Rekening bestaat niet");
         }
         boolean kredietLimietOverschreden = existingRekening.getSaldo() - opTeNemenBedrag < -existingRekening.getKredietLimiet();
@@ -53,7 +61,7 @@ public class Bank {
     public void transferMoney(String rekeningFrom, String rekeningTo, int overTeMakenBedrag) {
         Rekening rekeningteStortenBedrag = rekeningen.get(rekeningTo);
         Rekening rekeningopTeNemenBedrag = rekeningen.get(rekeningFrom);
-        if ( rekeningteStortenBedrag == null && rekeningopTeNemenBedrag == null ) {
+        if (rekeningteStortenBedrag == null && rekeningopTeNemenBedrag == null) {
             throw new IllegalStateException("Rekening bestaat niet");
         } else {
             rekeningteStortenBedrag.setSaldo(rekeningteStortenBedrag.getSaldo() + overTeMakenBedrag);

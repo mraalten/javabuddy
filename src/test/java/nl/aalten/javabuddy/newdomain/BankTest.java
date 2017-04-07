@@ -23,8 +23,8 @@ public class BankTest {
         invoer.setBsn("12345");
         invoer.setNaam("Anne");
         invoer.setGeboorteDatum(1965, 12, 12);
-        bank.findOrCreatePersoon(invoer.getBsn(), invoer.getNaam(), invoer.getGeboorteDatum());
-        Persoon vindPersoon = bank.findOrCreatePersoon("12345", "Anne", LocalDate.now());
+        bank.CreateNewPersoon(invoer.getBsn(), invoer.getNaam(), invoer.getGeboorteDatum());
+        Persoon vindPersoon = bank.findExistingPersoon("12345");
 
         assertThat(vindPersoon).isNotNull();
     }
@@ -32,8 +32,8 @@ public class BankTest {
     @Test
     public void it_should_return_an_existing_rekening() {
         Bank bank = new Bank("test");
-        bank.findOrCreatePersoon("12345", "test", LocalDate.now());
-        Persoon persoon = bank.findOrCreatePersoon("12345", "test", LocalDate.now());
+        bank.CreateNewPersoon("12345", "test", LocalDate.now());
+        Persoon persoon = bank.CreateNewPersoon("12345", "test", LocalDate.now());
         bank.addRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), 100, 500);
         bank.addSpaarRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), 100, 500);
         bank.transferMoney(persoon.rekeningen.get(0).getRekeningNummer(), persoon.rekeningen.get(1).getRekeningNummer(), 100);
@@ -48,20 +48,19 @@ public class BankTest {
         invoer.setBsn("12345");
         invoer.setNaam("Anne");
         invoer.setGeboorteDatum(1965, 12, 12);
-        Persoon persoon = bank.findOrCreatePersoon(invoer.getBsn(), invoer.getNaam(), invoer.getGeboorteDatum());
+        Persoon persoon = bank.CreateNewPersoon(invoer.getBsn(), invoer.getNaam(), invoer.getGeboorteDatum());
 
-        assertThat(persoon).isNull();
-        //       assertThat(personen.g).isEqualTo(invoer.getBsn());
+        assertThat(persoon).isNotNull();
     }
 
     @Test
     public void it_should_return_the_same_saldo_kredietoverschreven() {
         Bank bank = new Bank("test");
-        bank.findOrCreatePersoon("12345", "test", LocalDate.now());
-        Persoon persoon = bank.findOrCreatePersoon("12345", "test", LocalDate.now());
+        bank.CreateNewPersoon("12345", "test", LocalDate.now());
+        Persoon persoon = bank.CreateNewPersoon("12345", "test", LocalDate.now());
         bank.addRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), 100, 500);
         bank.addSpaarRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), 100, 500);
-        int saldoVoorOpname=persoon.rekeningen.get(0).getSaldo();
+        int saldoVoorOpname = persoon.rekeningen.get(0).getSaldo();
         bank.withdraw(persoon.rekeningen.get(0).getRekeningNummer(), 1000);
 
         assertEquals(saldoVoorOpname, persoon.rekeningen.get(0).getSaldo());
@@ -70,16 +69,13 @@ public class BankTest {
     @Test
     public void it_should_return_a_different_saldo_krediet_not_overschreven() {
         Bank bank = new Bank("test");
-        bank.findOrCreatePersoon("12345", "test", LocalDate.now());
-        Persoon persoon = bank.findOrCreatePersoon("12345", "test", LocalDate.now());
+        bank.CreateNewPersoon("12345", "test", LocalDate.now());
+        Persoon persoon = bank.CreateNewPersoon("12345", "test", LocalDate.now());
         bank.addRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), 100, 500);
         bank.addSpaarRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), 100, 500);
-        int saldoVoorOpname=persoon.rekeningen.get(0).getSaldo();
+        int saldoVoorOpname = persoon.rekeningen.get(0).getSaldo();
         bank.withdraw(persoon.rekeningen.get(0).getRekeningNummer(), 50);
 
         assertNotEquals(saldoVoorOpname, persoon.rekeningen.get(0).getSaldo());
     }
-
-
-
 }
