@@ -37,12 +37,17 @@ public class Bank {
     }
 
     public void withdraw(String rekeningNummer, int opTeNemenBedrag) {
-        Rekening existinRekening = rekeningen.get(rekeningNummer);
-        if ( existinRekening == null ) {
+        Rekening existingRekening = rekeningen.get(rekeningNummer);
+        if ( existingRekening == null ) {
             throw new IllegalStateException("Rekening bestaat niet");
-        } else {
-            existinRekening.setSaldo(existinRekening.getSaldo() - opTeNemenBedrag);
         }
+        boolean kredietLimietOverschreden = existingRekening.getSaldo() - opTeNemenBedrag < -existingRekening.getKredietLimiet();
+        if (kredietLimietOverschreden) {
+            System.out.println("Dit is een te groot bedrag om op te nemen!");
+        } else {
+            existingRekening.setSaldo(existingRekening.getSaldo() - opTeNemenBedrag);
+        }
+
     }
 
     public void transferMoney(String rekeningFrom, String rekeningTo, int overTeMakenBedrag) {
