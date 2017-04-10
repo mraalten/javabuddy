@@ -1,18 +1,13 @@
 package nl.aalten.javabuddy.newdomain;
 
-import nl.aalten.javabuddy.Invoer;
-import nl.aalten.javabuddy.domain.*;
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
-//import org.junit.Test;
+import nl.aalten.javabuddy.Invoer;
+import org.junit.Test;
 
 public class BankTest {
 

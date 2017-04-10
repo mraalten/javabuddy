@@ -37,23 +37,15 @@ public class BankApplication {
         Invoer invoer = new Invoer();
         switch (input_keuze) {
             case "1":
-//                System.out.println("Wat is het bsn nummer de klant");
-//                String bsnNummer = (input.nextLine());
-//                invoer.setBsn(bsnNummer);
-//                System.out.println("Wat is de naam van de klant");
-//                String naam = (input.nextLine());
-//                invoer.setNaam(naam);
-//                System.out.println("Wat is de geboortejaar  van de klant bijv 1966");
-//                int klant_gebjaar = Integer.parseInt(input.nextLine());
-//                System.out.println("Wat is de geboortemaand  van de klant bijv 06");
-//                int klant_gebmaand = Integer.parseInt(input.nextLine());
-//                System.out.println("Wat is de geboortedag  van de klant bijv 14");
-//                int klant_gebdag = Integer.parseInt(input.nextLine());
-//                invoer.setGeboorteDatum(klant_gebjaar, klant_gebmaand, klant_gebdag);
-//                bank.CreateNewPersoon(invoer.getBsn(), invoer.getNaam(), invoer.getGeboorteDatum());
-//                bank.addRekeningToPersoon(invoer.getBsn(), bank.bepaalMaxRekeningNummer(), doorlopendeSaldo, doorlopendKrediet);
-//                bank.addSpaarRekeningToPersoon(invoer.getBsn(), bank.bepaalMaxRekeningNummer(), spaarSaldo, spaarKrediet);
+                    /* Richard : Ipv dat je vanuit de BankApplication alle stappen doet (dus createNewPersoon, addRekeningToPersoon etc), is de Bank verantwoordelijk voor alles wat nodig is
+                     * om een nieuwe account te openen.
+                     * Ik verwacht dus eigenlijk een openAccount methode op Bank die alles doet:
+                     * bank.openAccount("12345", "Anne", LocalDate.of(1966, 12, 12))
+                     * De openAccount zou dan een rekeningNummer kunnen teruggeven waarop je dan geld kunt storten */
+
                 bank.CreateNewPersoon("12345", "Anne", LocalDate.of(1966, 12, 12));
+
+                /* Richard : ook de bank.bepaalMaxRekeningNummer()-aanroep kun je "verstoppen" binnen Bank-class */
                 bank.addRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), doorlopendeSaldo, doorlopendKrediet);
                 bank.addSpaarRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), spaarSaldo, spaarKrediet);
                 bank.CreateNewPersoon("98765", "Piet", LocalDate.of(1956, 11, 11));
