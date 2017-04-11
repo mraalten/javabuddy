@@ -17,10 +17,7 @@ public class BankApplication {
     }
 
     private static Invoer showKeuzes() {
-        int doorlopendeSaldo = 100;
-        int spaarSaldo = 0;
-        int doorlopendKrediet = 500;
-        int spaarKrediet = 0;
+
 
         Scanner input = new Scanner(System.in);
         System.out.println("1 Een nieuwe klant toevoegen ");
@@ -37,20 +34,14 @@ public class BankApplication {
         Invoer invoer = new Invoer();
         switch (input_keuze) {
             case "1":
-                    /* Richard : Ipv dat je vanuit de BankApplication alle stappen doet (dus createNewPersoon, addRekeningToPersoon etc), is de Bank verantwoordelijk voor alles wat nodig is
+                    /* Richard : Ipv dat je vanuit de BankApplication alle stappen doet (dus createNewPersoon, createBetaalrekening etc), is de Bank verantwoordelijk voor alles wat nodig is
                      * om een nieuwe account te openen.
                      * Ik verwacht dus eigenlijk een openAccount methode op Bank die alles doet:
                      * bank.openAccount("12345", "Anne", LocalDate.of(1966, 12, 12))
                      * De openAccount zou dan een rekeningNummer kunnen teruggeven waarop je dan geld kunt storten */
 
-                bank.CreateNewPersoon("12345", "Anne", LocalDate.of(1966, 12, 12));
-
-                /* Richard : ook de bank.bepaalMaxRekeningNummer()-aanroep kun je "verstoppen" binnen Bank-class */
-                bank.addRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), doorlopendeSaldo, doorlopendKrediet);
-                bank.addSpaarRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), spaarSaldo, spaarKrediet);
-                bank.CreateNewPersoon("98765", "Piet", LocalDate.of(1956, 11, 11));
-                bank.addRekeningToPersoon("98765", bank.bepaalMaxRekeningNummer(), doorlopendeSaldo, doorlopendKrediet);
-                bank.addSpaarRekeningToPersoon("98765", bank.bepaalMaxRekeningNummer(), spaarSaldo, spaarKrediet);
+                bank.createNewPersoon("12345", "Anne", LocalDate.of(1966, 12, 12));
+                bank.createNewPersoon("98765", "Piet", LocalDate.of(1956, 11, 11));
                 break;
             case "2":
                 System.out.println("Wat is het bsn nummer de klant");
@@ -74,7 +65,7 @@ public class BankApplication {
                 bsnNummerGezocht = (input.nextLine());
                 invoer.setBsn(bsnNummerGezocht);
                 Persoon persoonGezocht = bank.findExistingPersoon(bsnNummerGezocht);
-                bank.addRekeningToPersoon(persoonGezocht.getBsnNummer(), bank.bepaalMaxRekeningNummer(), doorlopendeSaldo, doorlopendKrediet);
+                bank.createBetaalrekening(persoonGezocht.getBsnNummer(), bank.bepaalMaxRekeningNummer(), doorlopendeSaldo, doorlopendKrediet);
                 break;
             case "9":
                 nogNietEindeProgramma = false;

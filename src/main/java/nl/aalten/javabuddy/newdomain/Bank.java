@@ -14,19 +14,44 @@ public class Bank {
     }
 
     public void openAccount(String bsn, String naam, LocalDate geboorteDatum) {
-        Persoon persoon = CreateNewPersoon(bsn, naam, geboorteDatum);
+        Persoon persoon = createNewPersoon(bsn, naam, geboorteDatum);
     }
 
     /* Richard : De naam van deze methode klopt niet; als de persoon al bestaat wordt er geen nieuwe aangemaakt.
     findOrCreatePersoon is denk ik een betere naam. Daarnaast begint de methode met een hoofdletter en dat is niet gebruikelijk */
-    public Persoon CreateNewPersoon(String bsn, String naam, LocalDate geboorteDatum) {
-        Persoon existingPerson = personen.get(bsn);
-        if (existingPerson == null) {
-            System.out.println("Dit bsnnummer bestaat niet. Wilt u deze nu invoeren?");
-            existingPerson = new Persoon(bsn, naam, geboorteDatum);
-            personen.put(bsn, existingPerson);
+    public Persoon createNewPersoon(String bsn, String naam, LocalDate geboorteDatum) {
+        if (personen.get(bsn) != null) {
+            throw new IllegalStateException("Klant bestaat al met bsn-nummer " + bsn);
         }
-        return existingPerson;
+        System.out.println("Dit bsnnummer bestaat niet. Wilt u deze nu invoeren?");
+        Persoon person = new Persoon(bsn, naam, geboorteDatum);
+        personen.put(bsn, person);
+
+        person.addRekening(createBetaalrekening());
+        addSpaarRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), spaarSaldo, spaarKrediet);
+
+        return person;
+    }
+
+
+    public Rekening createBetaalrekening() {
+        String rekeningNummer = "NLJAVA1" + bepaalMaxRekeningNummer();
+        Rekening rekening = new Betaalrekening(rekeningNummer);
+        rekeningen.put(rekeningNummer, rekening);
+        return rekening;
+    }
+
+    public void addSpaarRekeningToPersoon(String bsn, String maxRekeningNummer, int saldo, int kredietLimiet) {
+        Persoon existingPerson = personen.get(bsn);
+
+        /* Richard : ik zou deze constante NLJAVA2 onderdeel maken van de bepaalMaxRekeningNummer methode */
+        String rekeningNummer = "NLJAVA2" + maxRekeningNummer;
+
+        Rekening rekening = new Spaarrekening(rekeningNummer, saldo, kredietLimiet);
+        existingPerson.rekeningen.add(rekening);
+        List<Rekening> spaarrekeningenVoorPersoon = new ArrayList<>();
+        spaarrekeningenVoorPersoon.add(rekening);
+        rekeningen.put(rekeningNummer, rekening);
     }
 
     public Persoon findExistingPersoon(String bsn) {
@@ -41,11 +66,8 @@ public class Bank {
         Rekening existingRekening = rekeningen.get(rekeningNummer);
         if (existingRekening == null) {
             throw new IllegalStateException("Rekening bestaat niet");
-        } else {
-            /* Richard : ipv rechtstreeks het saldo te zetten op een rekening is het beter om dit over te laten aan de
-            * rekening-class zelf. Daar kun je dan ook een controle uitvoeren of er bv. wel voldoende saldo aanwezig is */
-            existingRekening.setSaldo(existingRekening.getSaldo() + teStortenBedrag);
         }
+        existingRekening.deposit(teStortenBedrag);
     }
 
     public void withdraw(String rekeningNummer, int opTeNemenBedrag) {
@@ -53,16 +75,7 @@ public class Bank {
         if (existingRekening == null) {
             throw new IllegalStateException("Rekening bestaat niet");
         }
-        /* Richard : ook hieronder: ipv aan de rekening het saldo en de kredietlimiet te vragen is het beter dit aan de
-         Rekening-class over te laten. Maakt het unit-testen ook makkelijker */
-
-        boolean kredietLimietOverschreden = existingRekening.getSaldo() - opTeNemenBedrag < -existingRekening.getKredietLimiet();
-        if (kredietLimietOverschreden) {
-            System.out.println("Dit is een te groot bedrag om op te nemen!");
-        } else {
-            existingRekening.setSaldo(existingRekening.getSaldo() - opTeNemenBedrag);
-        }
-
+        existingRekening.withdraw(opTeNemenBedrag);
     }
 
     public void transferMoney(String rekeningFrom, String rekeningTo, int overTeMakenBedrag) {
@@ -71,41 +84,12 @@ public class Bank {
         if (rekeningteStortenBedrag == null && rekeningopTeNemenBedrag == null) {
             throw new IllegalStateException("Rekening bestaat niet");
         } else {
-            rekeningteStortenBedrag.setSaldo(rekeningteStortenBedrag.getSaldo() + overTeMakenBedrag);
-            rekeningopTeNemenBedrag.setSaldo(rekeningopTeNemenBedrag.getSaldo() - overTeMakenBedrag);
+            rekeningopTeNemenBedrag.withdraw(rekeningopTeNemenBedrag.getSaldo() - overTeMakenBedrag);
+            rekeningteStortenBedrag.deposit(overTeMakenBedrag);
         }
-
     }
 
-
-    public void addRekeningToPersoon(String bsn, String maxRekeningNummer, int saldo, int kredietLimiet) {
-        Persoon existingPerson = personen.get(bsn);
-        String rekeningNummer = "NLJAVA1" + maxRekeningNummer;
-        Rekening rekening = new Rekening(rekeningNummer, saldo, kredietLimiet);
-        existingPerson.rekeningen.add(rekening);
-        List<Rekening> rekeningenVoorPersoon = new ArrayList<>();
-        rekeningenVoorPersoon.add(rekening);
-        rekeningen.put(rekeningNummer, rekening);
-    }
-
-        /* Richard : de addSpaarrekeningTopersoon-methode zou ik, als je hem al wilt gebruiken, private maken en
-        * aanroepen vanuit de openAccount-methode. Misschien zelfs beter om een addRekening-methode te maken op Persoon :
-        * persoon.addRekening(nieuweRekening) */
-
-    public void addSpaarRekeningToPersoon(String bsn, String maxRekeningNummer, int saldo, int kredietLimiet) {
-        Persoon existingPerson = personen.get(bsn);
-
-        /* Richard : ik zou deze constante NLJAVA2 onderdeel maken van de bepaalMaxRekeningNummer methode */
-        String rekeningNummer = "NLJAVA2" + maxRekeningNummer;
-
-        Rekening rekening = new Rekening(rekeningNummer, saldo, kredietLimiet);
-        existingPerson.rekeningen.add(rekening);
-        List<Rekening> spaarrekeningenVoorPersoon = new ArrayList<>();
-        spaarrekeningenVoorPersoon.add(rekening);
-        rekeningen.put(rekeningNummer, rekening);
-    }
-
-    public String bepaalMaxRekeningNummer() {
+    private String bepaalMaxRekeningNummer() {
         int maxRekeningNummer = 0;
 
         /* Richard : ipv de entrySet te gebruiken voor deze loop kun je het ook als volgt doen:

@@ -9,7 +9,7 @@ public class Persoon {
     private String bsnNummer;
     private String naam;
     private LocalDate geboorteDatum;
-    public List<Rekening> rekeningen = new ArrayList();
+    private List<Rekening> rekeningen = new ArrayList();
 
     public Persoon(String bsnNummer, String naam, LocalDate geboorteDatum) {
         this.bsnNummer = bsnNummer;
@@ -33,4 +33,9 @@ public class Persoon {
         return rekeningen;
     }
 
+    public void addRekening(Rekening rekening) {
+        if (rekening != null) {
+            rekeningen.add(rekening);
+        }
+    }
 }

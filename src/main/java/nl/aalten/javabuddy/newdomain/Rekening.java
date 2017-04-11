@@ -1,8 +1,6 @@
 package nl.aalten.javabuddy.newdomain;
 
-import java.time.LocalDate;
-
-public class Rekening {
+public abstract class Rekening {
 
     private String rekeningNummer;
     private int saldo;
@@ -18,15 +16,26 @@ public class Rekening {
         return rekeningNummer;
     }
 
-    public void setSaldo(int saldo) {
-        this.saldo = saldo;
-    }
-
     public int getSaldo() {
         return saldo;
     }
 
     public int getKredietLimiet() {
         return kredietLimiet;
+    }
+
+    public void withdraw(int opTeNemenBedrag) {
+        boolean kredietLimietOverschreden = saldo - opTeNemenBedrag < - kredietLimiet;
+        if (kredietLimietOverschreden) {
+            throw new IllegalArgumentException("Onvoldoende saldo");
+        } else {
+            saldo = saldo - opTeNemenBedrag;
+        }
+    }
+
+    public void deposit(int overTeMakenBedrag) {
+        if (overTeMakenBedrag > 0) {
+            saldo = saldo + overTeMakenBedrag;
+        }
     }
 }
