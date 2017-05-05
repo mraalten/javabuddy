@@ -17,6 +17,10 @@ public class Persoon {
         this.geboorteDatum = geboorteDatum;
     }
 
+    public Persoon(String bsnNummer) {
+        this.bsnNummer = bsnNummer;
+    }
+
     public String getBsnNummer() {
         return bsnNummer;
     }

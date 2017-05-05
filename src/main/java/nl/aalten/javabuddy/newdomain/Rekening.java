@@ -27,7 +27,8 @@ public abstract class Rekening {
     public void withdraw(int opTeNemenBedrag) {
         boolean kredietLimietOverschreden = saldo - opTeNemenBedrag < - kredietLimiet;
         if (kredietLimietOverschreden) {
-            throw new IllegalArgumentException("Onvoldoende saldo");
+//            throw new IllegalArgumentException("Onvoldoende saldo");
+            System.out.println("Onvoldoende saldo");
         } else {
             saldo = saldo - opTeNemenBedrag;
         }

@@ -13,53 +13,44 @@ public class Bank {
         this.naam = naam;
     }
 
-    public void openAccount(String bsn, String naam, LocalDate geboorteDatum) {
-        Persoon persoon = createNewPersoon(bsn, naam, geboorteDatum);
-    }
-
-    /* Richard : De naam van deze methode klopt niet; als de persoon al bestaat wordt er geen nieuwe aangemaakt.
-    findOrCreatePersoon is denk ik een betere naam. Daarnaast begint de methode met een hoofdletter en dat is niet gebruikelijk */
-    public Persoon createNewPersoon(String bsn, String naam, LocalDate geboorteDatum) {
-        if (personen.get(bsn) != null) {
-            throw new IllegalStateException("Klant bestaat al met bsn-nummer " + bsn);
-        }
-        System.out.println("Dit bsnnummer bestaat niet. Wilt u deze nu invoeren?");
+    public Persoon fillInitialPersonAndAccountDbase(String bsn, String naam, LocalDate geboorteDatum) {
         Persoon person = new Persoon(bsn, naam, geboorteDatum);
         personen.put(bsn, person);
-
-        person.addRekening(createBetaalrekening());
-        addSpaarRekeningToPersoon("12345", bank.bepaalMaxRekeningNummer(), spaarSaldo, spaarKrediet);
-
+        person.addRekening(createRekening("betaal"));
+        person.addRekening(createRekening("spaar"));
         return person;
     }
 
-
-    public Rekening createBetaalrekening() {
-        String rekeningNummer = "NLJAVA1" + bepaalMaxRekeningNummer();
-        Rekening rekening = new Betaalrekening(rekeningNummer);
-        rekeningen.put(rekeningNummer, rekening);
-        return rekening;
-    }
-
-    public void addSpaarRekeningToPersoon(String bsn, String maxRekeningNummer, int saldo, int kredietLimiet) {
-        Persoon existingPerson = personen.get(bsn);
-
-        /* Richard : ik zou deze constante NLJAVA2 onderdeel maken van de bepaalMaxRekeningNummer methode */
-        String rekeningNummer = "NLJAVA2" + maxRekeningNummer;
-
-        Rekening rekening = new Spaarrekening(rekeningNummer, saldo, kredietLimiet);
-        existingPerson.rekeningen.add(rekening);
-        List<Rekening> spaarrekeningenVoorPersoon = new ArrayList<>();
-        spaarrekeningenVoorPersoon.add(rekening);
-        rekeningen.put(rekeningNummer, rekening);
-    }
-
-    public Persoon findExistingPersoon(String bsn) {
-        Persoon existingPerson = personen.get(bsn);
-        if (existingPerson == null) {
-            System.out.println("Dit bsnnummer bestaat niet. Wilt u deze nu invoeren?");
+    public Rekening createRekening(String typeRekening) {
+        String rekeningNummer = bepaalMaxRekeningNummer(typeRekening);
+        if (typeRekening == "betaal") {
+            Rekening rekening = new Betaalrekening(rekeningNummer);
+            rekeningen.put(rekeningNummer, rekening);
+            return rekening;
+        } else {
+            Rekening rekening = new Spaarrekening(rekeningNummer);
+            rekeningen.put(rekeningNummer, rekening);
+            return rekening;
         }
-        return existingPerson;
+    }
+
+    public Persoon createNewPersoon(String bsn, String naam, LocalDate geboorteDatum) {
+        Persoon person = new Persoon(bsn, naam, geboorteDatum);
+        personen.put(bsn, person);
+        person.addRekening(createRekening("betaal"));
+        person.addRekening(createRekening("spaar"));
+        return person;
+    }
+
+    public Persoon findPersoon(String bsn) {
+        Persoon person = new Persoon(bsn);
+        if (personen.get(bsn) != null) {
+            person = personen.get(bsn);
+        } else {
+            System.out.println("Dit bsnnummer bestaat niet. Wilt u deze nu invoeren?");
+            person = createNewPersoon(bsn, "NewPersoon", LocalDate.of(1966, 12, 12));
+        }
+        return person;
     }
 
     public void deposit(String rekeningNummer, int teStortenBedrag) {
@@ -68,14 +59,17 @@ public class Bank {
             throw new IllegalStateException("Rekening bestaat niet");
         }
         existingRekening.deposit(teStortenBedrag);
+        System.out.println("Nieuw saldo is:" + existingRekening.getSaldo());
     }
 
     public void withdraw(String rekeningNummer, int opTeNemenBedrag) {
         Rekening existingRekening = rekeningen.get(rekeningNummer);
         if (existingRekening == null) {
-            throw new IllegalStateException("Rekening bestaat niet");
+            //           throw new IllegalStateException("Rekening bestaat niet");
+            System.out.println("Rekening bestaat niet");
         }
         existingRekening.withdraw(opTeNemenBedrag);
+        System.out.println("Nieuw saldo is:" + existingRekening.getSaldo());
     }
 
     public void transferMoney(String rekeningFrom, String rekeningTo, int overTeMakenBedrag) {
@@ -85,18 +79,17 @@ public class Bank {
             throw new IllegalStateException("Rekening bestaat niet");
         } else {
             rekeningopTeNemenBedrag.withdraw(rekeningopTeNemenBedrag.getSaldo() - overTeMakenBedrag);
+            System.out.println("Nieuw saldo is:" + rekeningopTeNemenBedrag.getSaldo());
             rekeningteStortenBedrag.deposit(overTeMakenBedrag);
+            System.out.println("Nieuw saldo is:" + rekeningteStortenBedrag.getSaldo());
         }
     }
 
-    private String bepaalMaxRekeningNummer() {
+    private String bepaalMaxRekeningNummer(String typeRekening) {
         int maxRekeningNummer = 0;
+        String newRekeningNummer = "";
 
-        /* Richard : ipv de entrySet te gebruiken voor deze loop kun je het ook als volgt doen:
-        * for (Rekening rekening : rekeningen.values()) {. Is iets leesbaarder */
-
-        for (Map.Entry<String, Rekening> entry : rekeningen.entrySet()) {
-            Rekening rekening = entry.getValue();
+        for (Rekening rekening : rekeningen.values()) {
             String rekeningNummer = rekening.getRekeningNummer().substring(9, 16);
             int intRekeningNummer = Integer.parseInt(rekeningNummer);
             if (maxRekeningNummer < intRekeningNummer) {
@@ -104,6 +97,11 @@ public class Bank {
             }
         }
         String rekeningVolgnummer = String.format("%09d", ++maxRekeningNummer);
-        return rekeningVolgnummer;
+        if (typeRekening == "spaar") {
+            newRekeningNummer = "NLJAVA2" + rekeningVolgnummer;
+        } else {
+            newRekeningNummer = "NLJAVA1" + rekeningVolgnummer;
+        }
+        return newRekeningNummer;
     }
 }

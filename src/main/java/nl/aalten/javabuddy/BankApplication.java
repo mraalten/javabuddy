@@ -17,8 +17,6 @@ public class BankApplication {
     }
 
     private static Invoer showKeuzes() {
-
-
         Scanner input = new Scanner(System.in);
         System.out.println("1 Een nieuwe klant toevoegen ");
         System.out.println("2 Een bestaande klant opvragen ");
@@ -40,22 +38,22 @@ public class BankApplication {
                      * bank.openAccount("12345", "Anne", LocalDate.of(1966, 12, 12))
                      * De openAccount zou dan een rekeningNummer kunnen teruggeven waarop je dan geld kunt storten */
 
-                bank.createNewPersoon("12345", "Anne", LocalDate.of(1966, 12, 12));
-                bank.createNewPersoon("98765", "Piet", LocalDate.of(1956, 11, 11));
+                bank.fillInitialPersonAndAccountDbase("12345", "Anne", LocalDate.of(1966, 12, 12));
+                bank.fillInitialPersonAndAccountDbase("98765", "Piet", LocalDate.of(1956, 11, 11));
                 break;
             case "2":
                 System.out.println("Wat is het bsn nummer de klant");
                 String bsnNummerGezocht = (input.nextLine());
                 invoer.setBsn(bsnNummerGezocht);
-                Persoon persoon = bank.findExistingPersoon(bsnNummerGezocht);
+                Persoon persoon = bank.findPersoon(bsnNummerGezocht);
                 System.out.println("Dit is de opgevraagde klant " + persoon.getNaam() + " " + persoon.getGeboorteDatum());
-                for (int i = 0; i < persoon.rekeningen.size(); i++) {
-                    System.out.println("Rekeningnummer" + i + " is: " + persoon.rekeningen.get(i).getRekeningNummer() + " saldo " + persoon.rekeningen.get(i).getSaldo());
+                for (int i = 0; i < persoon.getRekeningen().size(); i++) {
+                    System.out.println("Rekeningnummer" + i + " is: " + persoon.getRekeningen().get(i).getRekeningNummer() + " saldo: " + persoon.getRekeningen().get(i).getSaldo() + " limiet: " + persoon.getRekeningen().get(i).getKredietLimiet());
                 }
                 break;
             case "3":
-                bank.deposit("NLJAVA1000000003", 200);
-                bank.withdraw("NLJAVA1000000003", 100);
+                bank.deposit("NLJAVA1000000003", 50);
+                bank.withdraw("NLJAVA1000000003", 20);
                 break;
             case "4":
                 bank.transferMoney("NLJAVA1000000003", "NLJAVA1000000001", 25);
@@ -64,8 +62,8 @@ public class BankApplication {
                 System.out.println("Wat is het bsn nummer de klant");
                 bsnNummerGezocht = (input.nextLine());
                 invoer.setBsn(bsnNummerGezocht);
-                Persoon persoonGezocht = bank.findExistingPersoon(bsnNummerGezocht);
-                bank.createBetaalrekening(persoonGezocht.getBsnNummer(), bank.bepaalMaxRekeningNummer(), doorlopendeSaldo, doorlopendKrediet);
+                Persoon persoonGezocht = bank.findPersoon(bsnNummerGezocht);
+                persoonGezocht.addRekening(bank.createRekening("spaar"));
                 break;
             case "9":
                 nogNietEindeProgramma = false;
