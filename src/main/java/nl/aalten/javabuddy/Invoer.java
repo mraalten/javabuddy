@@ -13,6 +13,7 @@ public class Invoer {
     private String rekeningNummer;
     private int saldo;
     private int kredietLimiet;
+    //
 
     public String getBsn() {
         return bsn;
